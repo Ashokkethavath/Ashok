@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hangman Game</title>
+</head>
+<body>
+    <h1>Hangman Game</h1>
+    <p>Category: {{ category }}</p>
+    <p>Word: 
+    {% for letter in word %}
+        {% if letter in correct_guesses %}
+            {{ letter }}
+        {% else %}
+            _
+        {% endif %}
+    {% endfor %}
+    </p>
+    <p>Incorrect Guesses: {{ incorrect_guesses }}</p>
+    <p>Attempts Left: {{ max_attempts - current_attempts }}</p>
+    <form action="/guess" method="post">
+        <input type="hidden" name="word" value="{{ word }}">
+        <input type="hidden" name="category" value="{{ category }}">
+        <input type="hidden" name="current_attempts" value="{{ current_attempts }}">
+        <input type="hidden" name="correct_guesses" value="{{ ','.join(correct_guesses) }}">
+        <input type="hidden" name="incorrect_guesses" value="{{ ','.join(incorrect_guesses) }}">
+        <label for="letter">Enter a letter:</label>
+        <input type="text" name="letter" id="letter" maxlength="1">
+        <button type="submit">Guess</button>
+    </form>
+</body>
+</html>
