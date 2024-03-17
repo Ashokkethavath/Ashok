@@ -1,0 +1,67 @@
+# Import necessary modules
+import random
+from flask import Flask, render_template, request
+
+# Initialize Flask app
+app = Flask(__name__)
+
+# Define word categories
+categories = {
+    "movies": ["avatar", "titanic", "inception"],
+    "animals": ["elephant", "tiger", "giraffe"],
+    "countries": ["usa", "canada", "japan"]
+}
+
+# Function to select a word from the chosen category
+def select_word(category):
+    return random.choice(categories[category])
+
+# Routes
+@app.route('/')
+def index():
+    return render_template('index.html', categories=categories.keys())
+
+@app.route('/play', methods=['POST'])
+def play():
+    category = request.form.get('category')
+    word = select_word(category)
+    # Initialize game state
+    game_state = {
+        'word': word,
+        'category': category,
+        'max_attempts': 6,
+        'current_attempts': 0,
+        'correct_guesses': set(),
+        'incorrect_guesses': set()
+    }
+    # Render game template with initial state
+    return render_template('game.html', **game_state)
+
+@app.route('/guess', methods=['POST'])
+def guess():
+    letter = request.form.get('letter')
+    word = request.form.get('word')
+    category = request.form.get('category')
+    current_attempts = int(request.form.get('current_attempts'))
+    correct_guesses = set(request.form.get('correct_guesses').split(','))
+    incorrect_guesses = set(request.form.get('incorrect_guesses').split(','))
+    
+    if letter in word:
+        correct_guesses.add(letter)
+    else:
+        incorrect_guesses.add(letter)
+        current_attempts += 1
+    
+    game_state = {
+        'word': word,
+        'category': category,
+        'max_attempts': 6,
+        'current_attempts': current_attempts,
+        'correct_guesses': correct_guesses,
+        'incorrect_guesses': incorrect_guesses
+    }
+    
+    return render_template('game.html', **game_state)
+
+if __name__ == '__main__':
+    app.run(debug=True)
