@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hangman Game</title>
+</head>
+<body>
+    <h1>Welcome to Hangman Game</h1>
+    <form action="/play" method="post">
+        <label for="category">Choose a category:</label>
+        <select name="category" id="category">
+            {% for category in categories %}
+            <option value="{{ category }}">{{ category }}</option>
+            {% endfor %}
+        </select>
+        <button type="submit">Start Game</button>
+    </form>
+</body>
+</html>
